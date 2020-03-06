@@ -6,28 +6,39 @@ import data from './data';
 import Navigation from './components/Navigation';
 import Products from './components/Products';
 import ShoppingCart from './components/ShoppingCart';
+// import ShoppingCartItem from './components/ShoppingCartItem'
+
+//contexts
+import ProductContext from './contexts/ProductContext';
+import CartContext from './contexts/CartContext';
 
 function App() {
-	const [products] = useState(data);
-	const [cart, setCart] = useState([]);
+	const [ products ] = useState(data);
+	const [ cart, setCart ] = useState([]);
 
-	const addItem = item => {
+	const addItem = (item) => {
 		// add the given item to the cart
+		setCart([ ...cart, item ]);
 	};
 
+	// const removeItem = (item) => {
+	// 	setCart(cart.filter((product) => product.id !== item.id));
+	// };
 	return (
-		<div className="App">
-			<Navigation cart={cart} />
-
-			{/* Routes */}
-			<Route exact path="/">
-				<Products products={products} addItem={addItem} />
-			</Route>
-
-			<Route path="/cart">
-				<ShoppingCart cart={cart} />
-			</Route>
-		</div>
+		<CartContext.Provider value={{ cart }}>
+			<div className="App">
+				<Navigation />
+				<ProductContext.Provider value={{ products, addItem }}>
+					{/* Routes */}
+					<Route exact path="/">
+						<Products />
+					</Route>
+				</ProductContext.Provider>
+				<Route path="/cart">
+					<ShoppingCart />
+				</Route>
+			</div>
+		</CartContext.Provider>
 	);
 }
 
